@@ -114,12 +114,10 @@ public struct ChartLabel: View {
                    self.textToDisplay = self.chartConfig.chartTitle
                 }
                 .onReceive(self.chartValue.objectWillChange) { _ in
-                    print("received chartvalue")
                     self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartConfig.chartTitle
                 }
             
                 .onReceive(self.chartConfig.objectWillChange) { _ in
-                    print("inside onreceive of change config")
                     self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartConfig.chartTitle
                 }
             
