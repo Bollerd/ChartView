@@ -90,6 +90,7 @@ extension Line {
         let index = Int(round((touchLocation.x / geometryWidth) * CGFloat(chartData.points.count - 1)))
         if (index >= 0 && index < self.chartData.data.count){
             self.chartValue.currentValue = self.chartData.points[index]
+            self.chartValue.currentText = self.chartData.values[index]
         }
     }
 }

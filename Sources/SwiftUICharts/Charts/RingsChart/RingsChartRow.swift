@@ -108,6 +108,7 @@ public struct RingsChartRow: View {
 	func getCurrentValue(maxRadius: CGFloat) -> Double? {
 
 		guard let index = self.touchedCircleIndex(maxRadius: maxRadius) else { return nil }
+        self.chartValue.currentText = self.chartData.values[index]
 		return self.chartData.points[index]
 	}
 }

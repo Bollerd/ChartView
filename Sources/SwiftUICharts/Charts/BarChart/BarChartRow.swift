@@ -71,6 +71,7 @@ public struct BarChartRow: View {
     func getCurrentValue(width: CGFloat) -> Double? {
         guard self.chartData.data.count > 0 else { return nil}
             let index = max(0,min(self.chartData.data.count-1,Int(floor((self.touchLocation*width)/(width/CGFloat(self.chartData.data.count))))))
+            self.chartValue.currentText = self.chartData.values[index]
             return self.chartData.points[index]
         }
 }

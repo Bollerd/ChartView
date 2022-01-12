@@ -1,4 +1,7 @@
 import SwiftUI
+#if !os(macOS)
+import UIKit
+#endif
 
 /// What kind of label - this affects color, size, position of the label
 public enum ChartLabelType {
@@ -12,6 +15,7 @@ public enum ChartLabelType {
 /// A chart may contain any number of labels in pre-set positions based on their `ChartLabelType`
 public struct ChartLabel: View {
     @EnvironmentObject var chartValue: ChartValue
+   // @EnvironmentObject var chartData: ChartData
     @State var textToDisplay:String = ""
     var format: String = "%.01f"
 
@@ -95,10 +99,16 @@ public struct ChartLabel: View {
                 .padding(self.labelPadding)
                 .onAppear {
                     self.textToDisplay = self.title
+             //       self.textToDisplay = self.chartData.chartTitle
                 }
                 .onReceive(self.chartValue.objectWillChange) { _ in
-                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) : self.title
+                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.title
                 }
+            /*
+                .onReceive(self.title.objectWillChange) { _ in
+                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.title
+                }
+             */
             if !self.chartValue.interactionInProgress {
                 Spacer()
             }
