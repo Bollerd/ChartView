@@ -12,10 +12,22 @@ public enum ChartLabelType {
     case legend
 }
 
+public class ExtentedSwiftUIChartConfig: ObservableObject {
+    @Published public var chartTitle: String
+    
+    public init(title: String) {
+        self.chartTitle = title
+    }
+    
+    public func setTitle(title: String) {
+        self.chartTitle = title
+    }
+}
+
 /// A chart may contain any number of labels in pre-set positions based on their `ChartLabelType`
 public struct ChartLabel: View {
     @EnvironmentObject var chartValue: ChartValue
-   // @EnvironmentObject var chartData: ChartData
+    @EnvironmentObject var chartConfig: ExtentedSwiftUIChartConfig
     @State var textToDisplay:String = ""
     var format: String = "%.01f"
 
@@ -98,17 +110,19 @@ public struct ChartLabel: View {
                 .foregroundColor(self.labelColor)
                 .padding(self.labelPadding)
                 .onAppear {
-                    self.textToDisplay = self.title
-             //       self.textToDisplay = self.chartData.chartTitle
+                  //  self.textToDisplay = self.title
+                   self.textToDisplay = self.chartConfig.chartTitle
                 }
                 .onReceive(self.chartValue.objectWillChange) { _ in
-                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.title
+                    print("received chartvalue")
+                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartConfig.chartTitle
                 }
-            /*
-                .onReceive(self.title.objectWillChange) { _ in
-                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.title
+            
+                .onReceive(self.chartConfig.objectWillChange) { _ in
+                    print("inside onreceive of change config")
+                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartConfig.chartTitle
                 }
-             */
+            
             if !self.chartValue.interactionInProgress {
                 Spacer()
             }
