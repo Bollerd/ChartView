@@ -18,4 +18,12 @@ extension View where Self: ChartBase {
             .environmentObject(chartData)
             .environmentObject(ChartValue())
     }
+    
+    public func data(_ data: [(String, Double)], chartTitle: String) -> some View {
+        chartData.data = data
+        chartData.chartTitle = chartTitle
+        return self
+            .environmentObject(chartData)
+            .environmentObject(ChartValue())
+    }
 }

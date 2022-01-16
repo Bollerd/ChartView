@@ -28,6 +28,8 @@ public class ExtentedSwiftUIChartConfig: ObservableObject {
 public struct ChartLabel: View {
     @EnvironmentObject var chartValue: ChartValue
     @EnvironmentObject var chartConfig: ExtentedSwiftUIChartConfig
+    @EnvironmentObject var chartData: ChartData
+    @EnvironmentObject var data: ChartData
     @State var textToDisplay:String = ""
     var format: String = "%.01f"
 
@@ -111,16 +113,18 @@ public struct ChartLabel: View {
                 .padding(self.labelPadding)
                 .onAppear {
                   //  self.textToDisplay = self.title
-                   self.textToDisplay = self.chartConfig.chartTitle
+                   self.textToDisplay = self.chartData.chartTitle
                 }
                 .onReceive(self.chartValue.objectWillChange) { _ in
+                   self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartData.chartTitle
+                }
+                .onReceive(self.chartData.objectWillChange) { _ in
                     self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartConfig.chartTitle
                 }
-            
-                .onReceive(self.chartConfig.objectWillChange) { _ in
+                .onReceive(self.data.objectWillChange) { _ in
                     self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartConfig.chartTitle
                 }
-            
+        
             if !self.chartValue.interactionInProgress {
                 Spacer()
             }
