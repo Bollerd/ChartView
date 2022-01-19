@@ -114,7 +114,7 @@ public struct ChartLabel: View {
                    self.textToDisplay = self.chartConfig.chartTitle
                 }
                 .onReceive(self.chartValue.objectWillChange) { _ in
-                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartConfig.chartTitle
+                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + " - " + String(self.chartValue.currentText): self.chartConfig.chartTitle
                 }
                 .onReceive(self.chartConfig.objectWillChange) { _ in
                     self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartConfig.chartTitle
