@@ -12,15 +12,40 @@ public enum ChartLabelType {
     case legend
 }
 
+/// Configure the chart legend like chartTitle that can be updated after initial setting and configuration about if the legend of a datapoint should be dispayed
+/// and how it is delimited from the chart value
 public class ExtentedSwiftUIChartConfig: ObservableObject {
     @Published public var chartTitle: String
+    @Published public var dataPointLegendDelimiter: String
+    @Published public var displayDataPointLegend: Bool
     
-    public init(title: String) {
+    /// Initialize the extended chart legend conifugration
+    /// - Parameters:
+    ///   - title: chart title
+    ///   - dataPointLegendDelimiter: text to be dieplayed between data point and the data point legend
+    ///   - displayDataPointLegend: if false no data point legend is displayed in the chart title even if the chart data contains the string value
+    public init(title: String, dataPointLegendDelimiter: String, displayDataPointLegend: Bool) {
+        self.chartTitle = title
+        self.dataPointLegendDelimiter = dataPointLegendDelimiter
+        self.displayDataPointLegend = displayDataPointLegend
+    }
+    
+    /// sets the chart legend to a new title
+    /// - Parameter title: chart title to be used
+    public func setTitle(title: String) {
         self.chartTitle = title
     }
     
-    public func setTitle(title: String) {
-        self.chartTitle = title
+    /// set a new text that should be displayed between data point value and data point legend in case of chart selection
+    /// - Parameter displayDataPointLegend: text to be displayed between data point value and data point legend
+    public func setDataPointLegendDisplayStatus(displayDataPointLegend: Bool) {
+        self.displayDataPointLegend = displayDataPointLegend
+    }
+    
+    /// define if the legend shoud be displayed if a data point is selected
+    /// - Parameter dataPointLegendDelimiter: if false no legend for a selected data point is shown even if the data point has a legend information
+    public func setDataPointLegendDelimiter(dataPointLegendDelimiter: String) {
+        self.dataPointLegendDelimiter = dataPointLegendDelimiter
     }
 }
 
@@ -130,7 +155,18 @@ public struct ChartLabel: View {
                    self.textToDisplay = self.chartConfig.chartTitle
                 }
                 .onReceive(self.chartValue.objectWillChange) { _ in
-                    self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + " - " + String(self.chartValue.currentText): self.chartConfig.chartTitle
+                    // if no data text is available only display data point value
+                    if self.chartValue.currentText != "" {
+                        // don't display data legend even if the data contains a text
+                        if self.chartConfig.displayDataPointLegend == false {
+                            self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue): self.chartConfig.chartTitle
+                        } else {
+                            self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + self.chartConfig.dataPointLegendDelimiter + String(self.chartValue.currentText): self.chartConfig.chartTitle
+                        }
+                    } else {
+                        self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue): self.chartConfig.chartTitle
+                    }
+                    
                 }
                 .onReceive(self.chartConfig.objectWillChange) { _ in
                     self.textToDisplay = self.chartValue.interactionInProgress ? String(format: format, self.chartValue.currentValue) + String(self.chartValue.currentText): self.chartConfig.chartTitle
